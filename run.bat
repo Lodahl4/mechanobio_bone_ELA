@@ -1,0 +1,1 @@
+abaqus job=simple ask_delete=OFF standard_parallel=all cpus=2 interactive
