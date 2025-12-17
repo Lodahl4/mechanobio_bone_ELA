@@ -1,5 +1,3 @@
-# mechanobio_bone_2
+# mechanobio_bone_ELA
 
-Mechanobiological model for bone regeneration in a large bone defect left empty (main branch) and complemented with a PCL-TCP scaffold (branch scaffold_presence).
-
-Implementing surface-guided cell migration and ECM deposition and biological activity reduction (empty defect) or stimulation by ceramic TCP (defect with scaffold).
+Mechanobiological model for bone regeneration adapted from that of Perrier-Metz C. et al to handle abitrary specimen. See license for acknowledgement.
