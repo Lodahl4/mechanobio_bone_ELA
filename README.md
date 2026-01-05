@@ -5,8 +5,11 @@ Mechanobiological model for bone regeneration adapted from that of Perrier-Metz 
 
 Changes made by Emil Lodahl Andersen:
 
-Core Simulation Files
+
+-----------------Core Simulation Files-----------------
+
 main.cpp
+
 Line 6: Added #include <fstream> for file operations
 Lines 22-23: Added simulation timer initialization with start_timer()
 Lines 41-47: Removed manual initialization of Young's modulus (0.2 MPa) and Poisson ratio (0.167) for first 6 iterations
@@ -23,6 +26,7 @@ Lines 217-218: Added write_timing_results() to output simulation timing data
 Line 228: Removed explicit deletion of Young_modulus and Poisson_ratio arrays
 
 header.h
+
 Added all new functions and parameters and improved user interface (variables)
 Line 1: CELL_DIAMETER moved to first position and reduced from 0.1mm to 0.045mm
 Lines 2-4: LATTICE_X/Y/Z changed from fixed values (361, 361, 401) to calculated based on geometry and CELL_DIAMETER (89, 89, 156)
@@ -39,31 +43,41 @@ Line 41: Modified Update_model() signature parameter order
 Lines 44-45: Added timer functions: start_timer() and write_timing_results()
 
 
-Geometry & Mesh Processing
+-----------------Geometry & Mesh Processing-----------------
+
 Read_node_file.cpp
+
 None
 
 Read_element_file.cpp
+
 None
 
 Read_material_file.cpp
+
 New script. 
 Reads material properties for each element and stores Elastic modulus and Poisson’s ratio for each element
 
 Calculate_lattice.cpp
+
 None
 
 Extremes_element.cpp
+
 None
 
 Lattice_point_in_element.cpp
+
 None
 
 Plane_intersection.cpp
+
 None
 
-Cellular Behavior Modules
+-----------------Cellular Behavior Modules-----------------
+
 Initialize_lattice.cpp
+
 Line 13: Modified function signature - added lattice_point_element and Young_modulus parameters
 Lines 15-22: Commented out unused variable declarations (elem, free_positions, points, r1,r2,r3, osteoblasts_to_seed, seeded_cells, i1,i2)
 Lines 25-47: Complete rewrite - replaced geometry-based seeding (marrow cavity + periosteum ellipsoid calculations) with element-based seeding using Young's modulus
@@ -73,12 +87,15 @@ Lines 38, 44: Changed initial cell age from 1 to 6
 Removed: All marrow cavity dimensions and periosteum dimensions 
 
 Cell_proliferation.cpp
+
 Lines 87-96: Changed from conditional proliferation rates (high early / low late based on ACTIVITY_MAX) to fixed lower rates only (12%, 11%, 4%, 6% for MSCs, fibroblasts, chondrocytes, osteoblasts)
 
 Cell_mitosis.cpp
+
 None
 
 Cell_differentiation.cpp
+
 Line 38-40: Added apoptosis tracking variables (total_chondro_apop, total_fibro_apop, total_osteo_apop)
 Line 109: Changed differentiation rate from conditional (30% early / 6% late) to fixed 6%
 Line 209, 276, 339, 414: Added apoptosis counter accumulation for each tissue type per stimulus condition
@@ -87,6 +104,7 @@ Line 443-447: Added new apoptosis output file (apoptosis.txt) writing osteoblast
 Lines 21-24, 26-28: Removed unused variable declarations (points, i1-i3, j1-j3, k1-k3, inmature_osteoblasts)
 
 Cell_migration.cpp
+
 Lines 36-39: Commented out marrow cavity geometry variables (a, b, h) and changed dimensions 
 Line 43: Removed marrow cavity ellipsoid condition check - now only migrates cells within finite elements
 Lines 54-56: Updated from deprecated random_shuffle() to modern std::shuffle() with std::random_device and std::default_random_engine
@@ -94,16 +112,22 @@ Line 65: Removed marrow cavity migration zone check (1/3 height constraint) - co
 Line 93: Updated output path from "migration_distribution.txt" to "output\\migration_distribution.txt"
 
 Jump_migration.cpp
+
 None
 
 Neighbour_presence.cpp 
+
 None
 
 Cell_age.cpp
 
+None
 
-FEA Integration & I/O
+
+-----------------FEA Integration & I/O-----------------
+
 Read_stimulus.cpp
+
 Lines 17-20: Added stimulus array initialization to zeros before reading data
 Line 22: Changed input filename from "without_scaffold.dat" to "simple.dat"
 Lines 32-34: Removed "first element" read and debug comment
@@ -116,6 +140,7 @@ Lines 87-107: Restructured from nested if-else to priority-based else-if chain
 Lines 113-132: Added extensive commented debugging code for statistics and validation
 
 Update_model.cpp
+
 Line 30: Added number_inmature_osteoblasts variable declaration
 Line 33: Changed comment from "first element in callus" to "first element"
 Lines 89-97: Added case 3 handling for immature osteoblasts (woven bone) with detailed cell type comments
@@ -132,32 +157,44 @@ Lines 183-234: Completely restructured FEM file output - new format with differe
 Line 244: Removed ELSET specification in *EL PRINT command
 
 nrand.cpp
+
 None
 
 timer.cpp
+
+New script
+
 The timer functions track simulation runtime using C++ <chrono> library.
 
 extract_abaqus_data.py
+
 New script
+
 This script parses ABAQUS finite element model files (.inp) and extracts data for a mechanobiology simulation. It:
 Extracts nodes from all model instances and renumbers them sequentially
 Extracts elements (C3D4 tetrahedrons) and adjusts node connectivity across instances
 Creates material assignments for each element based on elastic properties (Young's modulus, Poisson ratio)
 Generates a model template with per-element section assignments
 
-Output
+-----------------Output-----------------
+
 Write_raw_lattice_file.cpp
+
 None
 
 Write_cell_count.cpp
+
 New script
+
 This function counts cell types across the 3D lattice and appends the results to a time-series summary file. It:
 Counts cells in each category: empty spaces (0), MSCs (1), osteoblasts (2), chondrocytes (4), fibroblasts (5), and other
 Appends one row per iteration to cell_count_summary.txt in space-separated format
 Writes a header on the first iteration (iteration -1)
 
 Write_youngs_modulus_histogram.cpp
+
 New script
+
 This function creates a histogram of Young's modulus values across all finite elements at a specific iteration. It:
 Bins the data into fixed intervals from 0 to MAX_STIFFNESS using the specified bin spacing
 Counts elements in each bin based on their current Young's modulus
